@@ -1,0 +1,31 @@
+services:
+
+    devstore-web:
+        image: ericteixeira/devstore-web:latest
+        container_name: devstore-web
+        build:
+            context: ../src
+            dockerfile: ./DevStore.Web/Dockerfile
+        restart: always
+        environment:
+            ASPNETCORE_ENVIRONMENT: Docker
+            ASPNETCORE_URLS: "http://+:80"
+            LC_ALL: "en_US.UTF-8"
+            LANG: "en_US.UTF-8"
+            # Alterar as duas linhas acima de acordo com sua cultura (ex pt_BR)
+        ports:
+            - "7500:80"
+        depends_on:
+            - devstore-database
+
+    devstore-database:
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        container_name: devstore-database
+        expose:
+            - 1433
+        ports:
+            - "1433:1433"
+            # A porta foi mapeada para o host para acessar pelo SQL Management Studio
+        environment:
+            SA_PASSWORD: "MyDB@12345678"
+            ACCEPT_EULA: "Y"
